@@ -87,4 +87,4 @@ Before starting, make sure you have the following installed:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/username/chat_app_2.0.git
+   git clone https://github.com/natnael-kiros/chat-app-2.0.git
