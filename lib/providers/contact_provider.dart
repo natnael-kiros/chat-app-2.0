@@ -32,7 +32,7 @@ class ContactsProvider extends ChangeNotifier {
   Future<void> loadContacts(String username) async {
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.6:8080/get_contacts'),
+        Uri.parse('http://192.168.137.50:8080/get_contacts'),
         body: jsonEncode({'username': username}),
         headers: {'Content-Type': 'application/json'},
       );
@@ -62,7 +62,7 @@ class ContactsProvider extends ChangeNotifier {
       String username, String contactUsername, String contactPhone) async {
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.6:8080/add_contact'),
+        Uri.parse('http://192.168.137.50:8080/add_contact'),
         body: jsonEncode({
           'username': username,
           'contactUsername': contactUsername,
@@ -71,17 +71,9 @@ class ContactsProvider extends ChangeNotifier {
         headers: {'Content-Type': 'application/json'},
       );
       if (response.statusCode == 200) {
-        // Parse the response body to get the newly added contact
-
-        // Add the new contact to the local _contacts list
         _contacts.add(Contact(
             id: 0, username: contactUsername, contactPhone: contactPhone));
-        print('errrrrrrrrrrrrr');
-        print(_contacts);
-        print(
-            'hhhhhhhhhhhhhhhhh\nhhhhhhhhhhhhhhhhhhhhhh\nhhhhhhhhhhhhhhhhhhhhh\nhhhhhhhhhhhhhhhhhhhhh');
 
-        // Notify listeners about the changes
         notifyListeners();
       } else {
         throw Exception('Failed to add contact');
@@ -94,13 +86,12 @@ class ContactsProvider extends ChangeNotifier {
   Future<void> removeContact(String username, String contactUsername) async {
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.6:8080/remove_contact'),
+        Uri.parse('http://192.168.137.50:8080/remove_contact'),
         body: jsonEncode(
             {'username': username, 'contactUsername': contactUsername}),
         headers: {'Content-Type': 'application/json'},
       );
       if (response.statusCode == 200) {
-        // Reload contacts after removing a contact
         await loadContacts(username);
       } else {
         throw Exception('Failed to remove contact');

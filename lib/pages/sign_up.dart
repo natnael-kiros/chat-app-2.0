@@ -62,14 +62,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderSide: BorderSide(
                       color: Colors.blueGrey,
                       width: 1.5,
-                    ), // Set the default border color
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
                       color: Colors.blueGrey,
                       width: 2.5,
-                    ), // Set the focused border color
+                    ),
                   ),
                 ),
                 controller: _usernameController,
@@ -85,14 +85,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderSide: BorderSide(
                       color: Colors.blueGrey,
                       width: 1.5,
-                    ), // Set the default border color
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
                       color: Colors.blueGrey,
                       width: 2.5,
-                    ), // Set the focused border color
+                    ),
                   ),
                 ),
                 controller: _phooneNoController,
@@ -106,14 +106,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderSide: BorderSide(
                       color: Colors.blueGrey,
                       width: 1.5,
-                    ), // Set the default border color
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide(
                       color: Colors.blueGrey,
                       width: 2.5,
-                    ), // Set the focused border color
+                    ),
                   ),
                 ),
                 controller: _passwordController,
@@ -122,14 +122,14 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(height: 10),
               GestureDetector(
                 onTap: () async {
-                  await _getImage(); // Call corrected image picker method
+                  await _getImage();
                 },
                 child: Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.blueGrey, // Set the border color
-                      width: 2.0, // Set the border width
+                      color: Colors.blueGrey,
+                      width: 2.0,
                     ),
                   ),
                   child: _image == null
@@ -152,17 +152,15 @@ class _SignUpPageState extends State<SignUpPage> {
               GestureDetector(
                 onTap: () async {
                   if (_image != null) {
-                    // If image is selected, pass the image path to signup method
                     await Provider.of<AuthProvider>(context, listen: false)
                         .signup(
                       context,
                       _usernameController,
                       _passwordController,
                       _phooneNoController,
-                      _image!.path, // Pass image path to signup method
+                      _image!.path,
                     );
                   } else {
-                    // If no image is selected, call signup without image path
                     await Provider.of<AuthProvider>(context, listen: false)
                         .signup(
                       context,

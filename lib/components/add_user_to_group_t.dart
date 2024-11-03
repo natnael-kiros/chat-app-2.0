@@ -83,13 +83,13 @@ class _AddGroupChatPageState extends State<AddGroupChatPage> {
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.white,
-                      width: 2.5, // Change the color here
+                      width: 2.5,
                     ),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Color.fromARGB(255, 238, 238, 238),
-                      width: 2, // Change the color here
+                      width: 2,
                     ),
                   ),
                   hintText: 'Search for contacts...',
@@ -109,33 +109,29 @@ class _AddGroupChatPageState extends State<AddGroupChatPage> {
                     margin: EdgeInsets.symmetric(vertical: 4),
                     padding: EdgeInsets.only(right: 12, top: 10, bottom: 10),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(
-                          255, 139, 168, 189), // Lighter shade of blueGrey
+                      color: Color.fromARGB(255, 139, 168, 189),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.3),
                           spreadRadius: 1,
                           blurRadius: 3,
-                          offset: Offset(0, 2), // changes position of shadow
+                          offset: Offset(0, 2),
                         ),
                       ],
                     ),
                     child: ListTile(
                       leading: FutureBuilder(
                         future: http.get(Uri.parse(
-                            'http://192.168.1.6:8080/profile_image/${contact.username}')),
+                            'http://192.168.137.50:8080/profile_image/${contact.username}')),
                         builder: (BuildContext context,
                             AsyncSnapshot<http.Response> snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            // While the Future is loading, return a CircularProgressIndicator or placeholder
                             return CircularProgressIndicator();
                           } else if (snapshot.hasError) {
-                            // If there's an error loading the image, display the Icon
                             return _buildAvatarWithIcon(Icons.person);
                           } else {
-                            // If the image exists, display the CircleAvatar with the NetworkImage
                             return _buildAvatarWithImage(contact.username);
                           }
                         },
@@ -204,7 +200,7 @@ Widget _buildAvatarWithImage(String imageUsername) {
       radius: 40,
       backgroundColor: Colors.transparent,
       backgroundImage: NetworkImage(
-        'http://192.168.1.6:8080/profile_image/$imageUsername',
+        'http://192.168.137.50:8080/profile_image/$imageUsername',
       ),
     ),
   );

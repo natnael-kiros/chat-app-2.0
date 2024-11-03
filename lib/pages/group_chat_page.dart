@@ -16,7 +16,6 @@ class GroupChatPage extends StatelessWidget {
     final groupProvider = Provider.of<GroupProvider>(context);
     List<String> groupNames = groupProvider.groupNames;
 
-    // Sort groupNames based on the timestamp of the latest message
     groupNames.sort((a, b) {
       final latestMessageA = groupProvider.getLatestMessageForGroup(a);
       final latestMessageB = groupProvider.getLatestMessageForGroup(b);
@@ -49,14 +48,14 @@ class GroupChatPage extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             padding: EdgeInsets.only(right: 12, top: 5, bottom: 12),
             decoration: BoxDecoration(
-              color: Colors.blueGrey[50], // Lighter shade of blueGrey
+              color: Colors.blueGrey[50],
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.3),
                   spreadRadius: 1,
                   blurRadius: 3,
-                  offset: Offset(0, 2), // changes position of shadow
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
@@ -71,7 +70,7 @@ class GroupChatPage extends StatelessWidget {
                 radius: 25,
                 backgroundColor: Colors.white,
                 backgroundImage: NetworkImage(
-                  'http://192.168.1.6:8080/group_image/${groupNames[index]}',
+                  'http://192.168.137.50:8080/group_image/${groupNames[index]}',
                 ),
               ),
               title: Text(
@@ -95,7 +94,6 @@ class GroupChatPage extends StatelessWidget {
                     fontSize: 13,
                     color: Colors.lightBlue),
               ),
-              // You can add more information about the group here if needed
             ),
           );
         },

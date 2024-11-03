@@ -1,8 +1,9 @@
 // ignore_for_file: prefer_interpolation_to_compose_strings, prefer_const_constructors
 
+import 'package:chat_app/model/message_model.dart';
 import 'package:chat_app/providers/auth_provider.dart';
 import 'package:chat_app/providers/message_provider.dart';
-import 'package:chat_app/pages/message_page.dart';
+import 'package:chat_app/pages/chat_message_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +43,7 @@ class ChatHistoryPage extends StatelessWidget {
           radius: 30,
           backgroundColor: Colors.transparent,
           backgroundImage: NetworkImage(
-            'http://192.168.1.6:8080/profile_image/$contactUsername',
+            'http://192.168.137.50:8080/profile_image/$contactUsername',
           ),
         ),
       );
@@ -67,7 +68,6 @@ class ChatHistoryPage extends StatelessWidget {
       );
     }
 
-    // Create a list of contacts with their latest message timestamp
     List<ContactWithTimestamp> contacts =
         messagesByContact.entries.map((entry) {
       String contact = entry.key;
@@ -82,16 +82,8 @@ class ChatHistoryPage extends StatelessWidget {
           )
           .content;
 
-      // Calculate unread message count (only for messages received by the current user)
-      // Calculate unread message count, excluding messages sent by the logged-in user
-// Calculate unread message count, excluding messages sent by the logged-in user
-      // Calculate unread message count, excluding messages sent by the logged-in user
-      // Calculate unread message count, excluding all sent messages
-
       int unreadMessageCount = messages
-          .where((message) =>
-              !message.isSent && // Exclude all sent messages
-              !message.isRead) // Include unread messages
+          .where((message) => !message.isSent && !message.isRead)
           .length;
       print('Messages for $contact:');
       for (Message message in messages) {
@@ -109,7 +101,6 @@ class ChatHistoryPage extends StatelessWidget {
       );
     }).toList();
 
-    // Sort contacts by their latest message timestamp
     contacts.sort(
         (a, b) => b.latestMessageTimestamp.compareTo(a.latestMessageTimestamp));
 
@@ -128,14 +119,14 @@ class ChatHistoryPage extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             padding: EdgeInsets.only(right: 12, top: 6, bottom: 12),
             decoration: BoxDecoration(
-              color: Colors.blueGrey[50], // Lighter shade of blueGrey
+              color: Colors.blueGrey[50],
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.3),
                   spreadRadius: 1,
                   blurRadius: 3,
-                  offset: Offset(0, 2), // changes position of shadow
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
@@ -143,17 +134,14 @@ class ChatHistoryPage extends StatelessWidget {
               contentPadding: EdgeInsets.symmetric(horizontal: 10.0),
               leading: FutureBuilder(
                 future: http.head(Uri.parse(
-                    'http://192.168.1.6:8080/profile_image/${contact.contactUsername}')),
+                    'http://192.168.137.50:8080/profile_image/${contact.contactUsername}')),
                 builder: (BuildContext context,
                     AsyncSnapshot<http.Response> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    // While the Future is loading, return a CircularProgressIndicator or placeholder
                     return CircularProgressIndicator();
                   } else if (snapshot.hasError) {
-                    // If there's an error loading the image, display the Icon
                     return _buildAvatarWithIcon(Icons.person);
                   } else {
-                    // If the image exists, display the CircleAvatar with the NetworkImage
                     return _buildAvatarWithImage(contact.contactUsername);
                   }
                 },

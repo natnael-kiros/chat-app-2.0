@@ -54,14 +54,14 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         ),
         GestureDetector(
           onTap: () async {
-            await _getImage(); // Call corrected image picker method
+            await _getImage();
           },
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.blueGrey, // Set the border color
-                width: 2.0, // Set the border width
+                color: Colors.blueGrey,
+                width: 2.0,
               ),
             ),
             child: _image == null
@@ -111,7 +111,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '${widget.selectedContacts.length}',
+                '${widget.selectedContacts.length} members',
                 style: TextStyle(
                     color: Color.fromARGB(255, 35, 63, 78),
                     fontWeight: FontWeight.bold,
@@ -136,18 +136,15 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     child: ListTile(
                       leading: FutureBuilder(
                         future: http.get(Uri.parse(
-                            'http://192.168.1.6:8080/profile_image/${contact.username}')),
+                            'http://192.168.137.50:8080/profile_image/${contact.username}')),
                         builder: (BuildContext context,
                             AsyncSnapshot<http.Response> snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
-                            // While the Future is loading, return a CircularProgressIndicator or placeholder
                             return CircularProgressIndicator();
                           } else if (snapshot.hasError) {
-                            // If there's an error loading the image, display the Icon
                             return _buildAvatarWithIcon(Icons.person);
                           } else {
-                            // If the image exists, display the CircleAvatar with the NetworkImage
                             return _buildAvatarWithImage(contact.username);
                           }
                         },
@@ -167,12 +164,29 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         onPressed: () async {
           final groupProvider =
               Provider.of<GroupProvider>(context, listen: false);
-          await groupProvider.createGroup(_groupname.text,
-              authProvider.loggedInUsername!, _image!.path, groupMembers);
-          groupProvider.addCreatedGroupName(_groupname.text);
-          Navigator.pop(context);
-          Navigator.pop(context);
-          Navigator.pop(context);
+          final groupExists =
+              await groupProvider.checkGroupExists(_groupname.text);
+          if (groupExists) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content:
+                    Text("Group name already exists. Please choose another."),
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else {
+            await groupProvider.createGroup(
+              _groupname.text,
+              authProvider.loggedInUsername!,
+              _image!.path,
+              groupMembers,
+            );
+            groupProvider.addCreatedGroupName(_groupname.text);
+
+            Navigator.pop(context);
+            Navigator.pop(context);
+            Navigator.pop(context);
+          }
         },
         child: Icon(
           Icons.check,
@@ -197,7 +211,7 @@ Widget _buildAvatarWithImage(String imageUsername) {
       radius: 40,
       backgroundColor: Colors.transparent,
       backgroundImage: NetworkImage(
-        'http://192.168.1.6:8080/profile_image/$imageUsername',
+        'http://192.168.137.50:8080/profile_image/$imageUsername',
       ),
     ),
   );

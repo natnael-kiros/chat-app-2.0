@@ -9,7 +9,6 @@ class GroupProvider extends ChangeNotifier {
   List<Map<String, dynamic>> _groups = [];
   List<String> _groupNames = [];
   List<GroupMessage> _groupMessages = [];
-  // Getter for accessing group names
   List<String> get groupNames => _groupNames;
   List<GroupMessage> get groupMessages => _groupMessages;
 
@@ -20,16 +19,28 @@ class GroupProvider extends ChangeNotifier {
   }
 
   GroupMessage? getLatestMessageForGroup(String groupName) {
-    // Filter messages by group name
     List<GroupMessage> messagesForGroup = _groupMessages
         .where((message) => message.groupName == groupName)
         .toList();
 
-    // Sort messages by timestamp in descending order
     messagesForGroup.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-    // Return the latest message if any
     return messagesForGroup.isNotEmpty ? messagesForGroup.first : null;
+  }
+
+  Future<bool> checkGroupExists(String groupName) async {
+    final response = await http.post(
+      Uri.parse('http://192.168.137.50:8080/checkGroupExists'),
+      body: jsonEncode({'groupName': groupName}),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      return result['exists'] ?? false;
+    } else {
+      throw Exception("Failed to check group existence.");
+    }
   }
 
   Future<void> createGroup(String groupname, String groupowner,
@@ -37,7 +48,7 @@ class GroupProvider extends ChangeNotifier {
     try {
       List<int> imageBytes = await File(groupImage).readAsBytes();
       final response =
-          await http.post(Uri.parse('http://192.168.1.6:8080/create_group'),
+          await http.post(Uri.parse('http://192.168.137.50:8080/create_group'),
               body: jsonEncode({
                 'groupname': groupname,
                 'groupowner': groupowner,
@@ -75,22 +86,19 @@ class GroupProvider extends ChangeNotifier {
 
   void addGroupNames(List<String> names) {
     _groupNames.addAll(names);
-    notifyListeners(); // Notify listeners that the data has changed
+    notifyListeners();
   }
 
   Future<List<Map<String, dynamic>>> getGroupsForUser(String username) async {
-    print('nnnn\nnnnn\nnnn\nnnnn\nnnnn\nnnnn\nnnnn\nnnn');
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.1.6:8080/groups/user/$username'),
+        Uri.parse('http://192.168.137.50:8080/groups/user/$username'),
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> responseData = jsonDecode(response.body);
         List<Map<String, dynamic>> fetchedGroups =
             responseData.cast<Map<String, dynamic>>();
-
-        // Check for duplicates and add only unique groups
         for (var group in fetchedGroups) {
           if (!_groups.contains(group)) {
             _groups.add(group);

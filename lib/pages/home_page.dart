@@ -3,11 +3,13 @@
 import 'dart:convert';
 
 import 'package:chat_app/model/group_message.dart';
-import 'package:chat_app/pages/add_user_to_group_t.dart';
+import 'package:chat_app/components/add_user_to_group_t.dart';
+import 'package:chat_app/pages/about_page.dart';
 import 'package:chat_app/pages/group_chat_page.dart';
-import 'package:chat_app/pages/test_page.dart';
+import 'package:chat_app/providers/audio_provider.dart';
 import 'package:chat_app/providers/auth_provider.dart';
 import 'package:chat_app/providers/contact_provider.dart';
+import 'package:chat_app/providers/file_provider.dart';
 import 'package:chat_app/providers/group_provider.dart';
 import 'package:chat_app/providers/message_provider.dart';
 import 'package:chat_app/pages/chat_history_page.dart';
@@ -31,19 +33,15 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // Establish WebSocket connection
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final senderUsername = authProvider.loggedInUsername;
-    final contactsProvider =
-        Provider.of<ContactsProvider>(context, listen: false);
+    Provider.of<ContactsProvider>(context, listen: false)
+        .loadContacts(senderUsername!);
 
-    // groupProvider.getGroupsForUser(authProvider.loggedInUsername!);
-    contactsProvider.loadContacts(senderUsername!);
     channel = IOWebSocketChannel.connect(
-      'ws://192.168.1.6:8080/websocket',
+      'ws://192.168.137.50:8080/websocket',
     );
 
-    // Include username in the initial "connect" message payload
     channel.sink
         .add(jsonEncode({'type': 'connect', 'username': senderUsername}));
 
@@ -53,8 +51,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   void handleMessage(message) {
-    print('toptopttptptoptoptoptpotopt');
-    // Parse the incoming message
     Map<String, dynamic> data = jsonDecode(message);
 
     String messageType = data['type'];
@@ -66,20 +62,53 @@ class _HomePageState extends State<HomePage> {
         handleGroupNames(data);
         break;
       case 'group_message':
-        print(
-            'eeeeeeeeeeee\neeeeeeeee\neeeeeeeeeeee\neeeeeeeeeeee\neeeeeeeeeeee\neeeeeee');
         handleGroupMessages(data);
         break;
-      // Add more cases as needed for other message types
+      case 'file':
+        handleFileTransfer(data);
+        break;
+      case 'audio':
+        handleAudioTransfer(data);
+        break;
+
       default:
         print('Unhandled message type: $messageType');
     }
   }
 
+  void handleFileTransfer(Map<String, dynamic> messageData) {
+    Map<String, dynamic> fileData = {
+      'fileId': messageData['fileId'],
+      'senderUsername': messageData['senderUsername'],
+      'recipientUsername': messageData['recipientUsername'],
+      'fileName': messageData['fileName'],
+      'fileContent': messageData['fileContent'],
+      'timestamp': messageData['timestamp'],
+      'isRead': messageData['isRead'] ?? false,
+      'isSent': messageData['isSent'] ?? true,
+    };
+
+    Provider.of<FileProvider>(context, listen: false).addFile(fileData);
+  }
+
+  void handleAudioTransfer(Map<String, dynamic> messageData) {
+    Map<String, dynamic> audioData = {
+      'audioId': messageData['audioId'],
+      'senderUsername': messageData['senderUsername'],
+      'recipientUsername': messageData['recipientUsername'],
+      'audioPath': messageData['audioPath'],
+      'audioContent': messageData['audioContent'],
+      'duration': messageData['duration'],
+      'timestamp': messageData['timestamp'],
+      'isRead': messageData['isRead'] ?? false,
+      'isSent': messageData['isSent'] ?? true,
+    };
+
+    Provider.of<AudioRecorderProvider>(context, listen: false)
+        .addAudio(audioData);
+  }
+
   void handleGroupMessages(Map<String, dynamic> messageData) {
-    print(
-        'fffffffffffffff\nfffffffffff\nffffffffffffffffff\nffffffffffffffffff\nfffffffffffffff');
-    print(messageData);
     GroupMessage message = GroupMessage(
       messageId: messageData['messageId'],
       groupId: messageData['groupId'],
@@ -90,10 +119,13 @@ class _HomePageState extends State<HomePage> {
       timestamp: messageData['timestamp'],
     );
     Provider.of<GroupProvider>(context, listen: false).addGroupMessage(message);
+    var groupProvider = Provider.of<GroupProvider>(context, listen: false);
+    if (!groupProvider.groupNames.contains(message.groupName)) {
+      groupProvider.addGroupNames([message.groupName]);
+    }
   }
 
   void handleChatMessage(Map<String, dynamic> data) {
-    // Extract data from the message
     String messageId = data['messageId'];
     String senderUsername = data['senderUsername'];
     String recipientUsername = data['recipientUsername'];
@@ -102,8 +134,6 @@ class _HomePageState extends State<HomePage> {
     bool isRead = data['isRead'];
     bool isSent = data['isSent'];
 
-    // Process the chat message
-    // For example, add it to your message provider
     Provider.of<MessageProvider>(context, listen: false).addMessage({
       'messageId': messageId,
       'senderUsername': senderUsername,
@@ -116,15 +146,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void handleGroupNames(Map<String, dynamic> data) {
-    // Extract group names from the message
     List<String> groupNames = List<String>.from(data['group_names']);
 
     Provider.of<GroupProvider>(context, listen: false)
         .addGroupNames(groupNames);
-
-    print(
-        'qqqqqqqqqq\nqqqqqqqqqqqqqq\nqqqqqqqqqqqqqq\nqqqqqqqqqqqqqqq\nqqqqqqqqqqqqqq\nqqqqqqqqqqqqqqqqqqqqq\nqqqqqqqqqqqqqqqqqqqqqqqq\nqqqqqqqqqqqqqqqqqqqqqqqqqq\nqqqqqqqqqqqqqqqqqqqqqqqqqq\nqqqqqqqqqqqqqqqqqqqq');
-    print(groupNames);
   }
 
   int _currentIndex = 0;
@@ -146,7 +171,7 @@ class _HomePageState extends State<HomePage> {
           Icons.edit,
           color: Colors.white,
         ),
-        backgroundColor: Colors.blueGrey, // Set your custom background color
+        backgroundColor: Colors.blueGrey,
         shape: CircleBorder(),
       ),
       body: Column(
@@ -197,12 +222,11 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     CircleAvatar(
                       backgroundImage: NetworkImage(
-                        'http://192.168.1.6:8080/profile_image/$loggedInUsername',
+                        'http://192.168.137.50:8080/profile_image/$loggedInUsername',
                       ),
                       radius: 40,
                     ),
-                    SizedBox(
-                        height: 5), // Adjust spacing between image and text
+                    SizedBox(height: 5),
                     Text(
                       loggedInUsername ?? 'FallbackUsername',
                       style: TextStyle(
@@ -222,7 +246,7 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: Container(
                 child: ListView(
-                  padding: EdgeInsets.zero, // Remove ListView default padding
+                  padding: EdgeInsets.zero,
                   children: [
                     ListTile(
                       onTap: () {
@@ -260,6 +284,12 @@ class _HomePageState extends State<HomePage> {
                       title: Text("Setting"),
                     ),
                     ListTile(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return AboutPage();
+                        }));
+                      },
                       leading: Icon(
                         Icons.info_outline,
                         color: Colors.blueGrey,
@@ -276,14 +306,13 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.only(bottom: 10),
                 child: ListTile(
                   onTap: () {
-                    final messageProvider =
-                        Provider.of<MessageProvider>(context, listen: false);
-                    messageProvider.clearMessages();
-                    final groupProvider =
-                        Provider.of<GroupProvider>(context, listen: false);
+                    Provider.of<MessageProvider>(context, listen: false)
+                        .clearMessages();
+
+                    Provider.of<GroupProvider>(context, listen: false)
+                        .clearGroups();
                     Provider.of<ContactsProvider>(context, listen: false)
                         .clearPhoneContact();
-                    groupProvider.clearGroups();
 
                     authProvider.logout();
                     Navigator.pushReplacement(context, MaterialPageRoute(

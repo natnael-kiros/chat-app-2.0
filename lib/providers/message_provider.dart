@@ -1,28 +1,9 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'package:chat_app/model/message_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'dart:io';
-
-class Message {
-  final String messageId;
-  final String senderUsername;
-  final String recipientUsername;
-  final String content;
-  final String timestamp;
-  bool isRead;
-  final bool isSent;
-
-  Message({
-    required this.messageId,
-    required this.senderUsername,
-    required this.recipientUsername,
-    required this.content,
-    required this.timestamp,
-    required this.isRead,
-    required this.isSent,
-  });
-}
 
 class MessageProvider with ChangeNotifier {
   final List<Message> _messages = [];
@@ -52,16 +33,13 @@ class MessageProvider with ChangeNotifier {
   }
 
   void markMessagesAsRead(String contactUsername, loggedInUsername) {
-    // Iterate through all messages and mark as read if the message is received from the specified contact
     for (int i = 0; i < _messages.length; i++) {
       if (_messages[i].recipientUsername == loggedInUsername &&
           _messages[i].senderUsername == contactUsername) {
-        // Update the isRead status of the message directly
         _messages[i].isRead = true;
       }
     }
     updateMessageReadStatus(loggedInUsername, contactUsername);
-    // Notify listeners  to update the UI
     notifyListeners();
   }
 
@@ -72,24 +50,20 @@ class MessageProvider with ChangeNotifier {
 
   void updateMessageReadStatus(String username, String contactUsername) async {
     try {
-      final url = Uri.parse('http://192.168.1.6:8080/update-message');
+      final url = Uri.parse('http://192.168.137.50:8080/update-message');
       final response = await http.post(
         url,
         body: jsonEncode(
             {'username': username, 'contactUsername': contactUsername}),
-        headers: {
-          'Content-Type': 'application/json'
-        }, // Specify JSON content type
+        headers: {'Content-Type': 'application/json'},
       );
 
-      // Handle response if needed
       if (response.statusCode == 200) {
         print('Message read status updated successfully');
       } else {
         print('Failed to update message read status');
       }
     } catch (e) {
-      // Handle errors
       print('Error updating message read status: $e');
     }
   }

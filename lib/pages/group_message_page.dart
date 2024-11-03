@@ -30,7 +30,7 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
   Future<String> getTimeFromServer() async {
     try {
       final response =
-          await http.get(Uri.parse('http://192.168.1.6:8080//time'));
+          await http.get(Uri.parse('http://192.168.137.50:8080//time'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         return data['time'];
@@ -42,7 +42,6 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
     }
   }
 
-  // Function to send a message
   void sendGroupMessage() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final groupProvider = Provider.of<GroupProvider>(context, listen: false);
@@ -54,7 +53,7 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
       'messageId': generateUniqueId(),
       'groupId': widget.groupname,
       'groupName': widget.groupname,
-      'senderId': senderUsername, // Assuming you have access to the sender's ID
+      'senderId': senderUsername,
       'senderName': senderUsername,
       'messageContent': _message.text,
       'timestamp': currentTime,
@@ -77,21 +76,6 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
     FocusScope.of(context).unfocus();
   }
 
-  // Function to delete a message
-  // void deleteMessage(String messageId) {
-  //   final messageProvider =
-  //       Provider.of<MessageProvider>(context, listen: false);
-  //   messageProvider.deleteMessage(messageId);
-
-  //   final deleteData = {
-  //     'type': 'delete',
-  //     'messageId': messageId,
-  //   };
-
-  //   widget.channel.sink.add(jsonEncode(deleteData));
-  // }
-
-  // Function to generate a unique message ID
   int generateUniqueId() {
     return DateTime.now().millisecondsSinceEpoch;
   }
@@ -140,18 +124,14 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
 
                   return GestureDetector(
                     onLongPress: () {
-                      // Set the selected message for deletion
                       setState(() {
                         selectedMessageIndex = index;
                       });
                     },
                     child: Container(
-                      margin: EdgeInsets.symmetric(
-                          vertical: 4,
-                          horizontal: 70), // Adjust horizontal margin
+                      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 70),
                       child: SizedBox(
-                        width: MediaQuery.of(context).size.width *
-                            0.7, // Adjust width as needed
+                        width: MediaQuery.of(context).size.width * 0.7,
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
@@ -168,8 +148,7 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
                                     : Alignment.centerLeft,
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 8), // Adjust padding as needed
+                                      horizontal: 10, vertical: 8),
                                   decoration: BoxDecoration(
                                     color: isSentByCurrentUser
                                         ? const Color.fromARGB(
@@ -228,17 +207,15 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
                               ),
                               if (selectedMessageIndex == index)
                                 Positioned(
-                                  top: 4, // Adjust as needed
+                                  top: 4,
                                   left: isSentByCurrentUser ? -40 : null,
                                   right: !isSentByCurrentUser ? -40 : null,
                                   child: IconButton(
                                     icon: Icon(Icons.delete),
                                     color: Color.fromARGB(195, 117, 15, 15),
                                     onPressed: () {
-                                      // deleteMessage(message.messageId);
                                       setState(() {
-                                        selectedMessageIndex =
-                                            -1; // Reset selected message index
+                                        selectedMessageIndex = -1;
                                       });
                                     },
                                   ),
@@ -251,7 +228,7 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
                                   radius: 25,
                                   backgroundColor: Colors.white,
                                   backgroundImage: NetworkImage(
-                                    'http://192.168.1.6:8080/profile_image/${message.senderName}',
+                                    'http://192.168.137.50:8080/profile_image/${message.senderName}',
                                   ),
                                 ),
                               ),
@@ -306,7 +283,6 @@ class _GroupMessagePageState extends State<GroupMessagePage> {
     );
   }
 
-  // Function to format timestamp to a readable format
   String formatTimestamp(String timestamp) {
     final dateTime = DateTime.parse(timestamp);
     final formattedTime = DateFormat.Hm().format(dateTime);

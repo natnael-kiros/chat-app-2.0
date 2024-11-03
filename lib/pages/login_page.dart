@@ -37,14 +37,14 @@ class LoginPage extends StatelessWidget {
                   borderSide: BorderSide(
                     color: const Color.fromARGB(255, 27, 112, 182),
                     width: 1.5,
-                  ), // Set the default border color
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
                     color: const Color.fromARGB(255, 27, 112, 182),
                     width: 2.5,
-                  ), // Set the focused border color
+                  ),
                 ),
               ),
               controller: _usernameController,
@@ -58,14 +58,14 @@ class LoginPage extends StatelessWidget {
                   borderSide: BorderSide(
                     color: const Color.fromARGB(255, 27, 112, 182),
                     width: 1.5,
-                  ), // Set the default border color
+                  ),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide(
                     color: const Color.fromARGB(255, 27, 112, 182),
                     width: 2.5,
-                  ), // Set the focused border color
+                  ),
                 ),
               ),
               controller: _passwordController,
@@ -74,13 +74,12 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: 10),
             GestureDetector(
               onTap: () async {
-                // Call the login method from AuthProvider
                 await Provider.of<AuthProvider>(context, listen: false).login(
                   context,
                   _usernameController,
                   _passwordController,
                 );
-              }, // Call login function
+              },
               child: Container(
                 width: 300,
                 height: 50,

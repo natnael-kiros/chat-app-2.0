@@ -5,10 +5,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:chat_app/pages/home_page.dart'; // Import your HomePage
-import 'package:chat_app/pages/login_page.dart'; // Import your LoginPage
+import 'package:chat_app/pages/home_page.dart';
+import 'package:chat_app/pages/login_page.dart';
 
 class AuthProvider extends ChangeNotifier {
+  static const String _isLoggedInKey = 'isLoggedIn';
+  static const String _usernameKey = 'username';
+  static const String _userIdKey = 'userId';
+  static const String _userPhoneNoKey = 'userPhoneNo';
   bool _isLoggedIn = false;
   String? _loggedInUsername;
   int? _loggedInUserId;
@@ -27,7 +31,7 @@ class AuthProvider extends ChangeNotifier {
     final String username = usernameController.text;
     final String password = passwordController.text;
 
-    final url = Uri.parse('http://192.168.1.6:8080/login');
+    final url = Uri.parse('http://192.168.137.50:8080/login');
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -37,9 +41,6 @@ class AuthProvider extends ChangeNotifier {
     if (response.statusCode == 200) {
       final responseData = jsonDecode(response.body);
       _isLoggedIn = true;
-      print('Type of userId: ${responseData['userId'].runtimeType}');
-      print('Type of username: ${responseData['username'].runtimeType}');
-      print('Type of phoneNo: ${responseData['phoneNo'].runtimeType}');
       _loggedInUsername = responseData['username'];
       _loggedInUserId = responseData['userId'];
       _loggedInUserPhoneNo = responseData['phoneNo'];
@@ -65,14 +66,14 @@ class AuthProvider extends ChangeNotifier {
     TextEditingController usernameController,
     TextEditingController passwordController,
     TextEditingController phoneNoController,
-    String? imagePath, // Accept an optional image path parameter
+    String? imagePath,
   ) async {
     final String username = usernameController.text;
     final String password = passwordController.text;
     final int phoneNo = int.parse(phoneNoController.text);
 
     try {
-      final url = Uri.parse('http://192.168.1.6:8080/register');
+      final url = Uri.parse('http://192.168.137.50:8080/register');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
@@ -92,10 +93,8 @@ class AuthProvider extends ChangeNotifier {
           },
         ));
 
-        // After successful registration, upload the image separately
         String? imageUrl;
         if (imagePath != null) {
-          // Upload image to the server
           imageUrl = await _uploadImageToServer(imagePath, username);
         }
       } else if (response.statusCode == 409) {
@@ -125,21 +124,17 @@ class AuthProvider extends ChangeNotifier {
 
   Future<String?> _uploadImageToServer(
       String imagePath, String username) async {
-    final url = Uri.parse('http://192.168.1.6:8080/upload');
+    final url = Uri.parse('http://192.168.137.50:8080/upload');
 
-    // Read image bytes
     List<int> imageBytes = await File(imagePath).readAsBytes();
 
-    // Create a map to store username and image bytes
     Map<String, dynamic> requestBody = {
       'username': username,
-      'image': base64Encode(imageBytes), // Encode image bytes as base64 string
+      'image': base64Encode(imageBytes),
     };
 
-    // Encode the map as JSON
     String jsonBody = jsonEncode(requestBody);
 
-    // Send POST request with JSON body
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -147,7 +142,6 @@ class AuthProvider extends ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      // Image uploaded successfully, parse the response body as text
       final String responseText = response.body;
       return responseText;
     } else {
@@ -157,7 +151,7 @@ class AuthProvider extends ChangeNotifier {
 
   Future<String?> getImageForUsername(String username) async {
     try {
-      final url = Uri.parse('http://192.168.1.6:8080/get_image');
+      final url = Uri.parse('http://192.168.137.50:8080/get_image');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},

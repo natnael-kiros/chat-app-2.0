@@ -2,7 +2,7 @@
 
 import 'package:chat_app/providers/auth_provider.dart';
 import 'package:chat_app/providers/message_provider.dart';
-import 'package:chat_app/pages/message_page.dart';
+import 'package:chat_app/pages/chat_message_page.dart';
 import 'package:chat_app/pages/phone_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/providers/contact_provider.dart';
@@ -25,13 +25,11 @@ class _ContactsPageState extends State<ContactsPage> {
   TextEditingController _phoneno = TextEditingController();
   Future<bool> checkUserExists(String username) async {
     final response =
-        await http.get(Uri.parse('http://192.168.1.6:8080/user/$username'));
+        await http.get(Uri.parse('http://192.168.137.50:8080/user/$username'));
 
     if (response.statusCode == 200) {
-      // User exists on the server
       return true;
     } else {
-      // User does not exist on the server
       return false;
     }
   }
@@ -43,13 +41,12 @@ class _ContactsPageState extends State<ContactsPage> {
     );
     if (result != null && result.length == 2) {
       setState(() {
-        _username.text = result[0]; // Username
-        _phoneno.text = result[1]; // Phone number
+        _username.text = result[0];
+        _phoneno.text = result[1];
       });
     }
   }
 
-// Call _openContactListScreen() when you want to navigate to the contact list screen
   @override
   Widget build(BuildContext context) {
     final contactsProvider = Provider.of<ContactsProvider>(context);
@@ -83,31 +80,28 @@ class _ContactsPageState extends State<ContactsPage> {
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               padding: EdgeInsets.only(right: 12, top: 12, bottom: 12),
               decoration: BoxDecoration(
-                color: Colors.blueGrey[50], // Lighter shade of blueGrey
+                color: Colors.blueGrey[50],
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.3),
                     spreadRadius: 1,
                     blurRadius: 3,
-                    offset: Offset(0, 2), // changes position of shadow
+                    offset: Offset(0, 2),
                   ),
                 ],
               ),
               child: ListTile(
                 leading: FutureBuilder(
                   future: http.get(Uri.parse(
-                      'http://192.168.1.6:8080/profile_image/$imageUsername')),
+                      'http://192.168.137.50:8080/profile_image/$imageUsername')),
                   builder: (BuildContext context,
                       AsyncSnapshot<http.Response> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      // While the Future is loading, return a CircularProgressIndicator or placeholder
                       return CircularProgressIndicator();
                     } else if (snapshot.hasError) {
-                      // If there's an error loading the image, display the Icon
                       return _buildAvatarWithIcon(Icons.person);
                     } else {
-                      // If the image exists, display the CircleAvatar with the NetworkImage
                       return _buildAvatarWithImage(imageUsername);
                     }
                   },
@@ -165,16 +159,6 @@ class _ContactsPageState extends State<ContactsPage> {
                               controller: _username,
                               decoration: InputDecoration(
                                 hintText: 'User Name',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 15,
-                            ),
-                            TextField(
-                              controller: _phoneno,
-                              decoration: InputDecoration(
-                                hintText: 'Phone No',
                                 border: OutlineInputBorder(),
                               ),
                             ),
@@ -337,7 +321,7 @@ class _ContactsPageState extends State<ContactsPage> {
         radius: 40,
         backgroundColor: Colors.transparent,
         backgroundImage: NetworkImage(
-          'http://192.168.1.6:8080/profile_image/$imageUsername',
+          'http://192.168.137.50:8080/profile_image/$imageUsername',
         ),
       ),
     );

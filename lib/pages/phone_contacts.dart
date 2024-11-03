@@ -37,7 +37,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
         _contacts = contacts?.toList() ?? [];
         Provider.of<ContactsProvider>(context, listen: false)
             .setPhoneContacts(contacts.toList());
-        _filteredContacts = _contacts; // Initialize filtered list
+        _filteredContacts = _contacts;
       });
     }
   }
@@ -82,14 +82,14 @@ class _ContactListScreenState extends State<ContactListScreen> {
                   padding: EdgeInsets.only(right: 8, top: 8, bottom: 8),
                   height: 85,
                   decoration: BoxDecoration(
-                    color: Colors.blueGrey[50], // Lighter shade of blueGrey
+                    color: Colors.blueGrey[50],
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.3),
                         spreadRadius: 1,
                         blurRadius: 3,
-                        offset: Offset(0, 2), // changes position of shadow
+                        offset: Offset(0, 2),
                       ),
                     ],
                   ),
