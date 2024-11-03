@@ -79,7 +79,7 @@ Include screenshots of your application to showcase its UI and functionality.
   </tr>
   <tr>
     <td>file-sharing</td>
-    <td>file-sharing.jpg</td>
+    <td>audio sharing</td>
   </tr>
 </table>
 
