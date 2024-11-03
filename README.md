@@ -72,6 +72,16 @@ Include screenshots of your application to showcase its UI and functionality.
     <td>Drawer</td>
   </tr>
 </table>
+<table>
+  <tr>
+    <td><img src="screenshots/file-sharing.jpg" width="200" style="margin-bottom: 20px;"/></td>
+    <td><img src="screenshots/file-sharing.jpg" width="200" style="margin-bottom: 20px;"/></td>
+  </tr>
+  <tr>
+    <td>file-sharing</td>
+    <td>file-sharing.jpg</td>
+  </tr>
+</table>
 
 ## Installation
 
