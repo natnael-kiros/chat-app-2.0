@@ -1,8 +1,8 @@
-# Chat App
+# Chat App 2.0
 
 ## Description
 
-The Chat App is a mobile application built using **Flutter** that allows users to engage in real-time messaging. Users can sign up with their name, phone number, and profile picture, creating a personalized experience. The app utilizes a separate Dart server to handle requests, authentication, and real-time chatting while storing all messages in a SQLite database.
+The Chat App 2.0 is a mobile application built using **Flutter** that allows users to engage in real-time messaging. Users can sign up with their name, phone number, and profile picture, creating a personalized experience. The app utilizes a separate Dart server to handle requests, authentication, and real-time chatting while storing all messages in a SQLite database.
 
 ### Key Features
 
@@ -13,12 +13,17 @@ The Chat App is a mobile application built using **Flutter** that allows users t
 - **Group Chat Functionality**: Create group chats and invite contacts to join, enabling collaborative conversations.
 - **Broadcast Messages**: Similar to Telegram, users can send broadcast messages to update others with important information.
 - **Chat List**: All chats are organized in a list based on timestamps, allowing users to easily find and continue conversations.
+- **Message Reactions**: Users can react to messages with emojis, enhancing interactions in chats.
+- **Media Sharing**: Users can send images, videos, and audio messages within chats, making conversations more engaging.
+- **Typing Indicators**: Users can see when their contacts are typing, providing a real-time chatting experience.
+- **Push Notifications**: Users receive notifications for new messages and activity, ensuring they stay updated.
 
 ## Architecture
 
 - **Client**: Built with Flutter, providing a smooth and responsive user interface for real-time communication.
 - **Server**: A Dart server that manages user requests, authentication, and real-time messaging.
 - **Database**: SQLite is used for local storage of messages, ensuring data persistence and efficient retrieval.
+
 ## Screenshots
 
 Include screenshots of your application to showcase its UI and functionality.
@@ -36,10 +41,9 @@ Include screenshots of your application to showcase its UI and functionality.
     <td>Chat</td>
     <td>Group</td>
   </tr>
-  </table>
+</table>
 
-
-  <table>
+<table>
   <tr>
     <td><img src="screenshots/contacts.jpg" width="200" style="margin-bottom: 20px;"/></td>
     <td><img src="screenshots/groupmessage.jpg" width="200" style="margin-bottom: 20px;"/></td>
@@ -52,9 +56,9 @@ Include screenshots of your application to showcase its UI and functionality.
     <td>Group Name</td>
     <td>Group Select</td>
   </tr>
-    </table>
+</table>
 
-  <table>
+<table>
   <tr>
     <td><img src="screenshots/message.jpg" width="200" style="margin-bottom: 20px;"/></td>
     <td><img src="screenshots/message2.jpg" width="200" style="margin-bottom: 20px;"/></td>
@@ -69,11 +73,6 @@ Include screenshots of your application to showcase its UI and functionality.
   </tr>
 </table>
 
-
-
-
-
-
 ## Installation
 
 ### Prerequisites
@@ -87,19 +86,5 @@ Before starting, make sure you have the following installed:
 
 1. **Clone the repository**:
 
-   -> git clone https://github.com/username/chat-app.git
-
-2. **Navigate to the project directory**:
-
-   -> cd chat-app
-
-4. **Install dependencies:**
-
-    -> flutter pub get
-
-5. **Set up the server:**
-
-   ->Navigate to the server directory and run the Dart server.
-
-6. **Run the app:**
-  flutter run
+   ```bash
+   git clone https://github.com/username/chat_app_2.0.git
