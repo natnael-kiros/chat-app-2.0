@@ -46,11 +46,12 @@ class AuthProvider extends ChangeNotifier {
       _loggedInUserPhoneNo = responseData['phoneNo'];
 
       notifyListeners();
-      Navigator.pushReplacement(context, MaterialPageRoute(
-        builder: (context) {
-          return HomePage();
-        },
-      ));
+      Navigator.pushNamed(context, '/homePage');
+      // Navigator.pushReplacement(context, MaterialPageRoute(
+      //   builder: (context) {
+      //     return HomePage();
+      //   },
+      // ));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

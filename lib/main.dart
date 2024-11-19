@@ -1,4 +1,7 @@
 import 'package:chat_app/model/file_model.dart';
+import 'package:chat_app/pages/home_page.dart';
+import 'package:chat_app/pages/phone_contacts.dart';
+import 'package:chat_app/pages/sign_up.dart';
 import 'package:chat_app/providers/audio_provider.dart';
 import 'package:chat_app/providers/contact_provider.dart';
 import 'package:chat_app/providers/file_provider.dart';
@@ -38,6 +41,12 @@ class MyApp extends StatelessWidget {
                 AppBarTheme(iconTheme: IconThemeData(color: Colors.white))),
         debugShowCheckedModeBanner: false,
         home: LoginPage(),
+        routes: {
+          '/loginPage': (context) => LoginPage(),
+          '/homePage': (context) => HomePage(),
+          '/signUpPage': (context) => SignUpPage(),
+          '/contactList': (context) => ContactListScreen(),
+        },
       ),
     );
   }
