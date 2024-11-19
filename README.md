@@ -11,7 +11,7 @@ The Chat App 2.0 is a mobile application built using **Flutter** that allows use
   - Add contacts either manually by entering their phone number or by importing from the device's contact list.
   - Start chatting with added contacts instantly.
 - **Group Chat Functionality**: Create group chats and invite contacts to join, enabling collaborative conversations.
-- **Broadcast Messages**: Similar to Telegram, users can send broadcast messages to update others with important information.
+- **Broadcast Messages**: Similar to Telegram, Admin can send broadcast messages to update others with important information.
 - **Chat List**: All chats are organized in a list based on timestamps, allowing users to easily find and continue conversations.
 - **Message Reactions**: Users can react to messages with emojis, enhancing interactions in chats.
 - **Media Sharing**: Users can send images, videos, and audio messages within chats, making conversations more engaging.
