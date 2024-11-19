@@ -22,7 +22,7 @@ The Chat App 2.0 is a mobile application built using **Flutter** that allows use
 
 - **Client**: Built with Flutter, providing a smooth and responsive user interface for real-time communication.
 - **Server**: A Dart server that manages user requests, authentication, and real-time messaging.
-- **Database**: SQLite is used for local storage of messages, ensuring data persistence and efficient retrieval.
+- **Database**: SQLite & Hive is used for server & local storage of messages, ensuring data persistence and efficient retrieval.
 
 ## Screenshots
 
